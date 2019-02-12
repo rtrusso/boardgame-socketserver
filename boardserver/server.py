@@ -13,7 +13,7 @@ class Server(object):
         self.server = None
         # player message queues
         self.players = dict((x, gevent.queue.Queue())
-                            for x in xrange(1, self.board.num_players+1))
+                            for x in range(1, self.board.num_players+1))
         # random player selection
         self.player_numbers = gevent.queue.JoinableQueue()
 
@@ -30,7 +30,7 @@ class Server(object):
             # update all players with the starting state
             state = self.board.to_json_state(state)
             # board = self.board.get_description()
-            for x in xrange(1, self.board.num_players+1):
+            for x in range(1, self.board.num_players+1):
                 self.players[x].put_nowait({
                     'type': 'update',
                     'board': None,  # board,
@@ -50,15 +50,15 @@ class Server(object):
         game = gevent.spawn(self.game_reset)
         self.server = gevent.server.StreamServer((self.addr, self.port),
                                                  self.connection)
-        print "Starting server..."
+        print ("Starting server...")
         self.server.serve_forever()
 
         # FIXME: need a way of nicely shutting down.
-        # print "Stopping server..."
+        # print ("Stopping server...")
         # self.server.stop()
 
     def connection(self, socket, address):
-        print "connection:", socket
+        print ("connection:", socket)
         self.local.socket = socket
         if self.player_numbers.empty():
             self.send({
@@ -130,7 +130,7 @@ class Server(object):
             data['winners'] = self.board.win_values(self.states)
             data['points'] = self.board.points_values(self.states)
 
-        for x in xrange(1, self.board.num_players+1):
+        for x in range(1, self.board.num_players+1):
             self.players[x].put(data)
 
     def send(self, data):

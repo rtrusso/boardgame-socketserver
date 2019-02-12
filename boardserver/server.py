@@ -38,7 +38,7 @@ class Server(object):
                 })
 
             # randomize the player selection
-            players = range(1, self.board.num_players+1)
+            players = list(range(1, self.board.num_players+1))
             random.shuffle(players)
             for p in players:
                 self.player_numbers.put_nowait(p)
@@ -81,7 +81,7 @@ class Server(object):
                 elif data.get('state', {}).get('player') == self.local.player:
                     message = ''
                     while not message.endswith('\r\n'):
-                        message += socket.recv(4096)
+                        message += str(socket.recv(4096), 'utf-8')
                     messages = message.rstrip().split('\r\n')
                     self.parse(messages[0]) # FIXME: support for multiple messages
                                             #        or out-of-band requests
@@ -134,4 +134,4 @@ class Server(object):
             self.players[x].put(data)
 
     def send(self, data):
-        self.local.socket.sendall("{0}\r\n".format(json.dumps(data)))
+        self.local.socket.sendall(bytes("{0}\r\n".format(json.dumps(data)), 'utf-8'))

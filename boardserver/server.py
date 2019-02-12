@@ -86,7 +86,7 @@ class Server(object):
                     self.parse(messages[0]) # FIXME: support for multiple messages
                                             #        or out-of-band requests
             except Exception as e:
-                print e
+                print (e)
                 socket.close()
                 self.player_numbers.put_nowait(self.local.player)
                 self.players[self.local.player].put_nowait(data)

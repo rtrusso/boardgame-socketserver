@@ -99,7 +99,9 @@ class Server(object):
             if data.get('type') != 'action':
                 raise Exception
             self.handle_action(data)
-        except Exception:
+        except Exception as e:
+            print("Exception while parsing message: [{0}]".format(msg));
+            print(e);
             self.players[self.local.player].put({
                 'type': 'error', 'message': msg
             })
